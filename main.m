@@ -13,7 +13,7 @@ TopOptsolution = createTopOpt(mesh,E0,v,p,h,epsilon,zeta);
 optimizer_init;
 % первая итерация
 FEMsolution = solveFEM(TopOptsolution, mesh);
-[f0val,df0dx,fval,dfdx,m] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
+[f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
 % Cтрока состояния
 fig = draw(mesh,TopOptsolution,'prep','Name','TopOpt');
 bar = waitbar(0,sprintf("Current iteration: %f",0));
@@ -34,7 +34,7 @@ while kktnorm > kkttol && outit < maxit
     TopOptsolution = TopOptSol_update(mesh,TopOptsolution,xval);
     
     FEMsolution = solveFEM(TopOptsolution, mesh);
-    [f0val,df0dx,fval,dfdx,m] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
+    [f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
     
     [residu,kktnorm,residumax] = kktcheck(m,n,xmma,ymma,zmma,lam,xsi,eta,mu,zet,s, ...
         xmin,xmax,df0dx,fval,dfdx,a0,a,c,d);
