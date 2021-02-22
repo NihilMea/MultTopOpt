@@ -127,7 +127,7 @@ while epsi > epsimin
       diaglamyiinv = eem./diaglamyi;
       dellamyi = dellam + dely./diagy;
       Axx = spdiags(diagx,0,n,n) + GG'*spdiags(diaglamyiinv,0,m,m)*GG;
-      azz = zet/z + a'*(a./diaglamyi);
+       azz = zet/z + a'*(a./diaglamyi);
       axz = -GG'*(a./diaglamyi);
       bx = delx + GG'*(dellamyi./diaglamyi);
       bz  = delz - a'*(dellamyi./diaglamyi);
@@ -172,7 +172,7 @@ while epsi > epsimin
 %
     itto = 0;
     resinew = 2*residunorm;
-    while resinew > residunorm & itto < 50
+    while resinew > residunorm && itto < 50
     itto = itto+1;
     x   =   xold + steg*dx;
     y   =   yold + steg*dy;

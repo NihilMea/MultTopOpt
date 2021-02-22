@@ -1,7 +1,7 @@
 % подготовка матрицы Ke
 function mesh = prepare_for_FEM(mesh,forces,fixed_DOFs)
 
-mesh = createKe(mesh);
+mesh.Ke = createKe(mesh);
 
 [~,force_DOF] = find(forces(:,3:4));
 forces_DOFs = mesh.DOFs(nodesNearPoint(mesh,forces(:,1:2)),force_DOF);

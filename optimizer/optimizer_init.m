@@ -1,13 +1,7 @@
 % Параметры оптимизатора
-maxit = 15;
+maxit = 40;
 
-% 
-% Вариант с граничными условиями на равенство 1 суммы переменных 
-% соответствующих элементу. Вариант "ломающий" MATLAB
-% m = numel(mesh.active_elements)*2 + TopOptsolution.p-1;   % The number of general constraints
-%
-m = TopOptsolution.p-1;   % The number of general constraints
-
+% m - задается в formulateOptimizerProblem
 n = numel(mesh.active_elements)*(TopOptsolution.p-1);       %The number of variables x_j
 epsimin = 1e-7;
 xval = TopOptsolution.x(mesh.active_elements,1:TopOptsolution.p-1);

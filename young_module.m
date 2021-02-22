@@ -1,3 +1,3 @@
-function [e] = young_module(TopOptsolution,parameters)
-e = (TopOptsolution.x.^3)*parameters.E0;
+function [e] = young_module(TopOptsolution)
+e = (TopOptsolution.x.^3)*TopOptsolution.E0;
 end

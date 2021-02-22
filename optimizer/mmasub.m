@@ -147,10 +147,8 @@ q0 = q0 + pq0;
 p0 = p0.*ux2;
 q0 = q0.*xl2;
 %
-P = sparse(m,n);
-Q = sparse(m,n);
-P = max(dfdx,0);
-Q = max(-dfdx,0);
+P = sparse(max(dfdx,0));
+Q = sparse(max(-dfdx,0));
 PQ = 0.001*(P + Q) + raa0*eeem*xmamiinv';
 P = P + PQ;
 Q = Q + PQ;

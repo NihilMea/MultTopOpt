@@ -1,4 +1,4 @@
-close all
+close all hidden
 addpath('./FEM');
 addpath('./optimizer');
 
@@ -9,13 +9,14 @@ mesh = generateMesh(size_x,size_y,passive_elem_bot_left_corner,...
     element_size_x,element_size_y); % Создание сетки
 mesh = prepare_for_FEM(mesh,forces,fixed_DOFs);
 % fig = draw(mesh,'prep');
-[TopOptsolution,parameters] = createTopOpt(mesh,E0,sigma_max,v,p,h,epsilon,zeta);
+TopOptsolution = createTopOpt(mesh,E0,v,p,h,epsilon,zeta);
 optimizer_init;
 % первая итерация
 FEMsolution = solveFEM(TopOptsolution, mesh);
-[f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution,parameters);
+[f0val,df0dx,fval,dfdx,m] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
 % Cтрока состояния
-% bar = waitbar(0,sprintf("Current iteration: %f",0));
+fig = draw(mesh,TopOptsolution,'prep','Name','TopOpt');
+bar = waitbar(0,sprintf("Current iteration: %f",0));
 % НАЧАЛО ЦИКЛА ОПТИМИЗАЦИИ
 while kktnorm > kkttol && outit < maxit
     % КОНЕЧНО-ЭЛЕМЕНТНЫЙ АНАЛИЗ
@@ -30,20 +31,18 @@ while kktnorm > kkttol && outit < maxit
     xold1 = xval;
     xval  = xmma;
     
-    TopOptsolution = TopOptSol_update(mesh,TopOptsolution,parameters,xval);
+    TopOptsolution = TopOptSol_update(mesh,TopOptsolution,xval);
     
     FEMsolution = solveFEM(TopOptsolution, mesh);
-    [f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution,parameters);
+    [f0val,df0dx,fval,dfdx,m] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
     
-    [residu,kktnorm,residumax] = ...
-        kktcheck(m,n,xmma,ymma,zmma,lam,xsi,eta,mu,zet,s, ...
+    [residu,kktnorm,residumax] = kktcheck(m,n,xmma,ymma,zmma,lam,xsi,eta,mu,zet,s, ...
         xmin,xmax,df0dx,fval,dfdx,a0,a,c,d);
-    
+    draw(mesh,TopOptsolution,'topoptresult','figure',fig);
     % Cтрока состояния
-%     waitbar(outit/maxit,bar,sprintf("Current iteration: %i",outit));
+    waitbar(outit/maxit,bar,sprintf("Current iteration: %i",outit));
 end
-draw(mesh,'topoptresult',TopOptsolution);
-% delete(bar)
+draw(mesh,TopOptsolution,'displacement','figure',fig,'Uy',FEMsolution.Ue,'notvoid');
 
 
 %path = sprintf('C:/Users/ilun9/Desktop/kurs/results/%s/',name); %путь сохранения изображения результата
