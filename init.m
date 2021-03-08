@@ -21,7 +21,7 @@ v = [0.2,0.2,0.6]';
 % ЗАДАНИЕ ГЕОМЕТРИИ
 
 
-size_x = 36; size_y = 18; % размеры области проектирования мм
+size_x = 24; size_y = 12; % размеры области проектирования мм
 % passive_elem_bot_left_corner = [35,0];
 % passive_elem_top_right_corner = [50,4];
 % fixed_elem_bot_left_corner = [0,13.5; 39.5,4];
