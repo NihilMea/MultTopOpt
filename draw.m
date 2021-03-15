@@ -22,7 +22,7 @@ while true
             U = sqrt(sum(U(:,1:2:end),2).^2+sum(U(:,2:2:end),2).^2)/4;
             i = i+1;
         case 'notvoid'
-            selection = mesh.elements(TopOptsolution.x(:,3)>0.95);
+            selection = mesh.elements(TopOptsolution.rho_n(:,3)>0.95);
     end
     i = i+1;
     if i == nargin-2
@@ -39,15 +39,15 @@ if ~exist('fig','var')
 end
 colorbar(fig.CurrentAxes,'off');
 
-
+color_scheam = [0 0 1; 0 1 0; 0 0 0; 1 0 0; 1 1 1];
 switch mode
     case 'prep'
         face_color(mesh.elements,:) = repelem([0,1,0],length(mesh.elements),1);
         face_color(ismember(mesh.elements,mesh.passive_elements),:) = repelem([1,0,0],length(mesh.passive_elements),1);
         face_color(ismember(mesh.elements,mesh.fixed_elements),:) = repelem([1,1,0],length(mesh.fixed_elements),1);
     case 'topoptresult'
-        color = [0 0 0; 1 0 0; 1 1 1];
-        face_color = min(max(TopOptsolution.x*color(1:TopOptsolution.p,:),0),1);
+        color = color_scheam(end-TopOptsolution.p+1:end,:);
+        face_color = min(max(TopOptsolution.rho_n*color(1:TopOptsolution.p,:),0),1);
     case 'displacement'
         color = colormap(jet);
         val = normalize(U,'range')*255;

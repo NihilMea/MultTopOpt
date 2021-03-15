@@ -1,5 +1,5 @@
 function mesh = generateMesh(size_x,size_y,passive_bottom_left_points,...
-    passive_top_right_points,fixed_bottom_left_points,fixed_top_right_points,element_size_x,element_size_y)
+    passive_top_right_points,fixed_bottom_left_points,fixed_top_right_points,element_size_x,element_size_y,rmin)
 mesh.element_size_x = element_size_x;
 mesh.element_size_y = element_size_y;
 mesh.num_elements_x = floor(size_x/element_size_x);
@@ -23,6 +23,10 @@ mesh.fixed_elements = mesh.elements(fixed);
 
 mesh.active_elements = setdiff(mesh.elements,mesh.fixed_elements);
 mesh.active_elements = setdiff(mesh.active_elements,mesh.passive_elements);
+
+mesh.active_nodes = unique(mesh.element_has_nodes(mesh.active_elements,:));
+[mesh.neighborhoods,mesh.weight,mesh.sum_weight,mesh.nodes_in_neighborhoods,mesh.nodes_weight] = nodesInsideCircle(mesh.element_coords(mesh.active_elements,:),rmin,mesh);
+
 
 mesh.DOFs = [2*mesh.nodes-1;2*mesh.nodes]'; 
 

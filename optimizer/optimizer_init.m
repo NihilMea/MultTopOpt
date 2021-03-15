@@ -1,10 +1,10 @@
 % Параметры оптимизатора
 maxit = 40;
 
-m =  numel(mesh.active_elements)*2 + TopOptsolution.p-1; % number of constraint
-n = numel(mesh.active_elements)*(TopOptsolution.p-1); %The number of variables x_j
+m =  TopOptsolution.p; % number of constraint
+n = numel(mesh.active_nodes)*(TopOptsolution.p); %The number of variables x_j
 epsimin = 1e-7;
-xval = TopOptsolution.x(mesh.active_elements,1:TopOptsolution.p-1);
+xval = TopOptsolution.phi;
 xval = xval(:);
 xold1 = xval;
 xold2 = xval;

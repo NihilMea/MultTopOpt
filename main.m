@@ -6,14 +6,14 @@ init; % Иннициализация переменныйх
 
 mesh = generateMesh(size_x,size_y,passive_elem_bot_left_corner,...
     passive_elem_top_right_corner,fixed_elem_bot_left_corner,fixed_elem_top_right_corner,...
-    element_size_x,element_size_y); % Создание сетки
+    element_size_x,element_size_y,rmin); % Создание сетки
 mesh = prepare_for_FEM(mesh,forces,fixed_DOFs);
 % fig = draw(mesh,'prep');
-TopOptsolution = createTopOpt(mesh,E0,v,p,h,epsilon,zeta);
+TopOptsolution = createTopOpt(mesh,E0,v,p,q,beta,h,rmin);
 optimizer_init;
 % первая итерация
 FEMsolution = solveFEM(TopOptsolution, mesh);
-[f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
+[f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution,m,n);
 % Cтрока состояния
 fig = draw(mesh,TopOptsolution,'prep','Name','TopOpt');
 bar = waitbar(0,sprintf("Current iteration: %f",0));
@@ -31,10 +31,10 @@ while kktnorm > kkttol && outit < maxit
     xold1 = xval;
     xval  = xmma;
     
-    TopOptsolution = TopOptSol_update(mesh,TopOptsolution,xval);
+    TopOptsolution = TopOptSol_update(mesh,TopOptsolution,xval,beta,dbeta,beta_max,outeriter);
     
     FEMsolution = solveFEM(TopOptsolution, mesh);
-    [f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution);
+    [f0val,df0dx,fval,dfdx] = formulateOptimizationProblem(mesh,FEMsolution,TopOptsolution,m,n);
     
     [residu,kktnorm,residumax] = kktcheck(m,n,xmma,ymma,zmma,lam,xsi,eta,mu,zet,s, ...
         xmin,xmax,df0dx,fval,dfdx,a0,a,c,d);
@@ -42,7 +42,7 @@ while kktnorm > kkttol && outit < maxit
     % Cтрока состояния
     waitbar(outit/maxit,bar,sprintf("Current iteration: %i",outit));
 end
-draw(mesh,TopOptsolution,'displacement','figure',fig,'Uy',FEMsolution.Ue,'notvoid');
+% draw(mesh,TopOptsolution,'displacement','figure',fig,'Uy',FEMsolution.Ue,'notvoid');
 
 
 %path = sprintf('C:/Users/ilun9/Desktop/kurs/results/%s/',name); %путь сохранения изображения результата
